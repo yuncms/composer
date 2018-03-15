@@ -45,30 +45,30 @@ class ManifestManager
         if (file_exists($installed = $this->vendorPath . '/composer/installed.json')) {
             $packages = json_decode(file_get_contents($installed), true);
         }
-        $manifests = [];
+        $manifests = ['migrations' => [], 'events' => [], 'tasks' => []];
         foreach ($packages as $package) {
             if ($package['type'] === self::PACKAGE_TYPE && isset($package['extra'][self::EXTRA_FIELD]) && isset($package['extra'][self::EXTRA_FIELD]['id'])) {
                 $extra = $package['extra'][self::EXTRA_FIELD];
                 if (isset($extra['migrationPath'])) {//迁移
-                    $manifests['migration'][] = $extra['migrationPath'];
+                    $manifests['migrations'][] = $extra['migrationPath'];
                 }
                 if (isset($extra['events'])) {
                     foreach ($extra['events'] as $event) {
-                        $manifests['event'][] = $event;
+                        $manifests['events'][] = $event;
                     }
                 }
                 if (isset($extra['tasks'])) {
                     foreach ($extra['tasks'] as $task) {
-                        $manifests['task'][] = $task;
+                        $manifests['tasks'][] = $task;
                     }
                 }
             }
         }
 
         //写清单文件
-        $this->write(self::MIGRATION_FILE, $manifests['migration']);
-        $this->write(self::EVENT_FILE, $manifests['event']);
-        $this->write(self::TASK_FILE, $manifests['task']);
+        $this->write(self::MIGRATION_FILE, $manifests['migrations']);
+        $this->write(self::EVENT_FILE, $manifests['events']);
+        $this->write(self::TASK_FILE, $manifests['tasks']);
     }
 
     /**
