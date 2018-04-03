@@ -47,14 +47,9 @@ class ManifestManager
         }
         $manifests = ['migrations' => [], 'events' => [], 'tasks' => [], 'translations' => []];
         foreach ($packages as $package) {
-            $packagePath = $this->vendorPath . DIRECTORY_SEPARATOR . $package['name'];
             if ($package['type'] === self::PACKAGE_TYPE && isset($package['extra'][self::EXTRA_FIELD])) {
-                $configFile = $packagePath . DIRECTORY_SEPARATOR . $package['extra'][self::EXTRA_FIELD];
-                if (!is_array($package['extra'][self::EXTRA_FIELD]) && is_file($configFile)) {
-                    $extra = include($configFile);
-                } else {
-                    $extra = $package['extra'][self::EXTRA_FIELD];
-                }
+                $extra = $this->getManifest($package);
+
                 if (isset($extra['migrationPath'])) {//迁移
                     $manifests['migrations'][] = $extra['migrationPath'];
                 }
@@ -81,6 +76,26 @@ class ManifestManager
         $this->write(self::EVENT_FILE, $manifests['events']);
         $this->write(self::TASK_FILE, $manifests['tasks']);
         $this->write(self::TASK_FILE, $manifests['tasks']);
+    }
+
+    /**
+     * 获取包清单
+     * @param array $package
+     * @return mixed|null
+     */
+    public function getManifest($package)
+    {
+
+        if (is_array($package['extra'][self::EXTRA_FIELD])) {
+            return $package['extra'][self::EXTRA_FIELD];
+        } else if (is_string($package['extra'][self::EXTRA_FIELD])) {
+            $manifestFile = $this->vendorPath . DIRECTORY_SEPARATOR . $package['name'] . DIRECTORY_SEPARATOR . $package['extra'][self::EXTRA_FIELD];
+            if (is_file($manifestFile)) {
+                return include($manifestFile);
+            }
+        }
+
+        return null;
     }
 
     /**
