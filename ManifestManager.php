@@ -45,10 +45,16 @@ class ManifestManager
         if (file_exists($installed = $this->vendorPath . '/composer/installed.json')) {
             $packages = json_decode(file_get_contents($installed), true);
         }
-        $manifests = ['migrations' => [], 'events' => [], 'tasks' => []];
+        $manifests = ['migrations' => [], 'events' => [], 'tasks' => [], 'translations' => []];
         foreach ($packages as $package) {
-            if ($package['type'] === self::PACKAGE_TYPE && isset($package['extra'][self::EXTRA_FIELD]) && isset($package['extra'][self::EXTRA_FIELD]['id'])) {
-                $extra = $package['extra'][self::EXTRA_FIELD];
+            $packagePath = $this->vendorPath . DIRECTORY_SEPARATOR . $package['name'];
+            if ($package['type'] === self::PACKAGE_TYPE && isset($package['extra'][self::EXTRA_FIELD])) {
+                $configFile = $packagePath . DIRECTORY_SEPARATOR . $package['extra'][self::EXTRA_FIELD];
+                if (!is_array($package['extra'][self::EXTRA_FIELD]) && is_file($configFile)) {
+                    $extra = include($configFile);
+                } else {
+                    $extra = $package['extra'][self::EXTRA_FIELD];
+                }
                 if (isset($extra['migrationPath'])) {//迁移
                     $manifests['migrations'][] = $extra['migrationPath'];
                 }
@@ -62,12 +68,18 @@ class ManifestManager
                         $manifests['tasks'][] = $task;
                     }
                 }
+                if (isset($extra['translations'])) {
+                    foreach ($extra['translations'] as $id => $translation) {
+                        $manifests['translations'][$id] = $translation;
+                    }
+                }
             }
         }
 
         //写清单文件
         $this->write(self::MIGRATION_FILE, $manifests['migrations']);
         $this->write(self::EVENT_FILE, $manifests['events']);
+        $this->write(self::TASK_FILE, $manifests['tasks']);
         $this->write(self::TASK_FILE, $manifests['tasks']);
     }
 
