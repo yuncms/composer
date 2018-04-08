@@ -69,12 +69,12 @@ return [
     'id'=> 'user',
     'migrationPath'=> '@vendor/....',
     'events'=> [
-	[etc],
-	[etc1]
+    [etc],
+        [etc1]
     ],
     'tasks'=> [
-	[etc],
-	[etc1]
+        [etc],
+        [etc1]
     ],
     'translations'=> [
 	'yuncms/user'=> [
