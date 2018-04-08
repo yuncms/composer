@@ -51,23 +51,23 @@ class ManifestManager
         $manifests = ['migrations' => [], 'events' => [], 'tasks' => [], 'translations' => []];
         foreach ($packages as $package) {
             if ($package['type'] === self::PACKAGE_TYPE && isset($package['extra'][self::EXTRA_FIELD])) {
-                $extra = $this->getManifest($package);
+                $manifest = $this->getManifest($package);
 
-                if (isset($extra['migrationPath'])) {//迁移
-                    $manifests['migrations'][] = $extra['migrationPath'];
+                if (isset($manifest['migrationPath'])) {//迁移
+                    $manifests['migrations'][] = $manifest['migrationPath'];
                 }
-                if (isset($extra['events'])) {
-                    foreach ($extra['events'] as $event) {
+                if (isset($manifest['events'])) {
+                    foreach ($manifest['events'] as $event) {
                         $manifests['events'][] = $event;
                     }
                 }
-                if (isset($extra['tasks'])) {
-                    foreach ($extra['tasks'] as $task) {
+                if (isset($manifest['tasks'])) {
+                    foreach ($manifest['tasks'] as $task) {
                         $manifests['tasks'][] = $task;
                     }
                 }
-                if (isset($extra['translations'])) {
-                    foreach ($extra['translations'] as $id => $translation) {
+                if (isset($manifest['translations'])) {
+                    foreach ($manifest['translations'] as $id => $translation) {
                         $manifests['translations'][$id] = $translation;
                     }
                 }
@@ -84,11 +84,10 @@ class ManifestManager
     /**
      * 获取包清单
      * @param array $package
-     * @return mixed|null
+     * @return array
      */
     public function getManifest($package)
     {
-
         if (is_array($package['extra'][self::EXTRA_FIELD])) {
             return $package['extra'][self::EXTRA_FIELD];
         } else if (is_string($package['extra'][self::EXTRA_FIELD])) {
@@ -97,8 +96,7 @@ class ManifestManager
                 return include($manifestFile);
             }
         }
-
-        return null;
+        return [];
     }
 
     /**
