@@ -49,3 +49,15 @@ the Yii 2 application is responding to a request. For example,
     }
 }
 ```
+
+or :
+
+```json
+{
+    "type": "yii2-extension",
+    ...,
+    "extra": {
+        "yuncms": "mainfest.php"
+    }
+}
+```
