@@ -61,3 +61,39 @@ or :
     }
 }
 ```
+
+mainfest.php :
+
+```php
+return [
+    'id'=> 'user',
+    'migrationPath'=> '@vendor/....',
+    'events'=> [
+	[etc],
+	[etc1]
+    ],
+    'tasks'=> [
+	[etc],
+	[etc1]
+    ],
+    'translations'=> [
+	'yuncms/user'=> [
+		'class' => 'yii\i18n\PhpMessageSource',
+                //'basePath' => '@app/messages',
+                'sourceLanguage' => 'en-US',
+                'fileMap' => [
+                    'app' => 'app.php',
+                    'app/error' => 'error.php',
+                ],
+	]
+    ],
+    'frontend'=> [
+	'class=>'',
+	'etc'
+    ],
+    'backend'=> [
+	'class=>'',
+    ],
+];
+
+```

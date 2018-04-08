@@ -48,7 +48,7 @@ class ManifestManager
         if (file_exists($installed = $this->vendorPath . '/composer/installed.json')) {
             $packages = json_decode(file_get_contents($installed), true);
         }
-        $manifests = ['migrations' => [], 'events' => [], 'tasks' => [], 'translations' => []];
+        $manifests = ['migrations' => [], 'events' => [], 'tasks' => [], 'translations' => [], 'backend' => [], 'frontend' => []];
         foreach ($packages as $package) {
             if ($package['type'] === self::PACKAGE_TYPE && isset($package['extra'][self::EXTRA_FIELD])) {
                 $manifest = $this->getManifest($package);
@@ -71,6 +71,12 @@ class ManifestManager
                         $manifests['translations'][$id] = $translation;
                     }
                 }
+                if (isset($manifest['frontend']['class'])) {
+                    $manifests['frontend'][$manifest['id']] = $manifest['frontend'];
+                }
+                if (isset($manifest['backend'])) {
+                    $manifests['backend'][$manifest['id']] = $manifest['backend'];
+                }
             }
         }
 
@@ -79,6 +85,8 @@ class ManifestManager
         $this->write(self::EVENT_FILE, $manifests['events']);
         $this->write(self::TASK_FILE, $manifests['tasks']);
         $this->write(self::TRANSLATE_FILE, $manifests['translations']);
+        $this->write(self::FRONTEND_MODULE_FILE, $manifests['frontend']);
+        $this->write(self::BACKEND_MODULE_FILE, $manifests['backend']);
     }
 
     /**
