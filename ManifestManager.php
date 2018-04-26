@@ -19,7 +19,7 @@ class ManifestManager
     const EXTRA_FIELD = 'yuncms';
     const MIGRATION_FILE = 'yuncms/migrations.php';//全局迁移
     const TASK_FILE = 'yuncms/tasks.php';//计划任务
-    const EVENT_FILE = 'yuncms/events.php';//计划任务
+    const EVENT_FILE = 'yuncms/events.php';//全局事件
     const TRANSLATE_FILE = 'yuncms/translates.php';//全局语言包
     const FRONTEND_MODULE_FILE = 'yuncms/frontend.php';//后端配置文件
     const BACKEND_MODULE_FILE = 'yuncms/backend.php';//前端配置文件
