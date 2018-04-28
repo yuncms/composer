@@ -18,7 +18,6 @@ class ManifestManager
     const PACKAGE_TYPE = 'yii2-extension';
     const EXTRA_FIELD = 'yuncms';
     const MIGRATION_FILE = 'yuncms/migrations.php';//全局迁移
-    const TASK_FILE = 'yuncms/tasks.php';//计划任务
     const EVENT_FILE = 'yuncms/events.php';//全局事件
     const TRANSLATE_FILE = 'yuncms/translates.php';//全局语言包
     const FRONTEND_MODULE_FILE = 'yuncms/frontend.php';//后端配置文件
@@ -48,7 +47,7 @@ class ManifestManager
         if (file_exists($installed = $this->vendorPath . '/composer/installed.json')) {
             $packages = json_decode(file_get_contents($installed), true);
         }
-        $manifests = ['migrations' => [], 'events' => [], 'tasks' => [], 'translations' => [], 'backend' => [], 'frontend' => []];
+        $manifests = ['migrations' => [], 'events' => [],'translations' => [], 'backend' => [], 'frontend' => []];
         foreach ($packages as $package) {
             if ($package['type'] === self::PACKAGE_TYPE && isset($package['extra'][self::EXTRA_FIELD])) {
                 $manifest = $this->getManifest($package);
@@ -59,11 +58,6 @@ class ManifestManager
                 if (isset($manifest['events'])) {
                     foreach ($manifest['events'] as $event) {
                         $manifests['events'][] = $event;
-                    }
-                }
-                if (isset($manifest['tasks'])) {
-                    foreach ($manifest['tasks'] as $task) {
-                        $manifests['tasks'][] = $task;
                     }
                 }
                 if (isset($manifest['translations'])) {
@@ -83,7 +77,6 @@ class ManifestManager
         //写清单文件
         $this->write(self::MIGRATION_FILE, $manifests['migrations']);
         $this->write(self::EVENT_FILE, $manifests['events']);
-        $this->write(self::TASK_FILE, $manifests['tasks']);
         $this->write(self::TRANSLATE_FILE, $manifests['translations']);
         $this->write(self::FRONTEND_MODULE_FILE, $manifests['frontend']);
         $this->write(self::BACKEND_MODULE_FILE, $manifests['backend']);
